@@ -1,21 +1,28 @@
 package main
 
 import (
-	"encoding/json"
 	"log"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	// Criar uma instância do router Gin com configuração padrão
+	r := gin.Default()
+
+	// Definir rota para o endpoint raiz "/"
+	r.GET("/", func(c *gin.Context) {
+		// Criar a resposta
 		response := map[string]string{
 			"message": "Hello Go",
 		}
 
-		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(response)
+		// O Gin já configura automaticamente o Content-Type como application/json
+		c.JSON(http.StatusOK, response)
 	})
 
+	// Iniciar o servidor na porta 8080
 	log.Println("Servidor iniciado na porta 8080")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Fatal(r.Run(":8080"))
 }
